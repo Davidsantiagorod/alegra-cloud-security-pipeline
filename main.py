@@ -18,6 +18,7 @@ from pathlib import Path
 from pipeline.actions import console_table, write_action_artifacts, write_reports
 from pipeline.audit import verify
 from pipeline.engine import run
+from pipeline.policy import evaluate_gate
 
 ROOT = Path(__file__).resolve().parent
 
@@ -33,6 +34,8 @@ def main(argv=None) -> int:
     p.add_argument("--out", type=Path, default=ROOT / "output")
     p.add_argument("--llm", choices=["off", "mock", "gemini", "compromised"], default="mock")
     p.add_argument("--gate", action="store_true", help="modo CI: falla si hay P1/P2 accionables")
+    p.add_argument("--baseline", type=Path, default=None,
+                   help="report.json previo: con --gate solo bloquea P1/P2 nuevos o agravados")
     p.add_argument("--verify-audit", action="store_true")
     args = p.parse_args(argv)
 
@@ -67,12 +70,14 @@ def main(argv=None) -> int:
           f"Auditoria: {result['audit_path']}")
 
     if args.gate:
-        blocking = [d for d in result["decisions"] if d.priority in ("P1", "P2")]
+        blocking, suppressed = evaluate_gate(result["decisions"], args.baseline)
         if blocking:
-            print(f"\nGATE: FALLA — {len(blocking)} hallazgo(s) P1/P2 accionables: "
+            mode_lbl = "diferencial vs baseline" if args.baseline else "estricto"
+            print(f"\nGATE ({mode_lbl}): FALLA — {len(blocking)} hallazgo(s) P1/P2 bloqueantes: "
                   + ", ".join(d.group_id for d in blocking))
             return 2
-        print("\nGATE: OK")
+        extra_msg = f" ({suppressed} P1/P2 preexistentes en baseline siguen su SLA)" if suppressed else ""
+        print(f"\nGATE: OK{extra_msg}")
     return 0
 
 

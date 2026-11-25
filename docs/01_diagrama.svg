@@ -1,0 +1,310 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1140" viewBox="0 0 1600 1140" font-family="Segoe UI, Inter, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/>
+    </marker>
+    <marker id="arrTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#0d9488"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626"/>
+    </marker>
+    <filter id="sh" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1140" fill="#f8fafc"/>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="1600" height="72" fill="#13293d"/>
+  <rect x="0" y="68" width="1600" height="4" fill="#00bfa5"/>
+  <text x="36" y="32" fill="#00bfa5" font-size="13" font-weight="700" letter-spacing="1">DESAFÍO TÉCNICO ALEGRA · ENTREGABLE ①</text>
+  <text x="36" y="55" fill="#ffffff" font-size="21" font-weight="700">Pipeline de Vulnerabilidades (Código y SO Linux) — Del reaccionar a prevenir</text>
+
+  <!-- Legend top-right -->
+  <g transform="translate(1010, 16)" font-size="12" fill="#e2e8f0">
+    <rect x="0" y="4" width="16" height="14" rx="3" fill="#ffffff" stroke="#0284c7" stroke-width="2"/>
+    <text x="22" y="15">Etapa automática</text>
+    <polygon points="150,4 160,11 150,18 140,11" fill="#ecfeff" stroke="#0d9488" stroke-width="2"/>
+    <text x="167" y="15">Decisión determinista</text>
+    <rect x="310" y="4" width="18" height="14" rx="7" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+    <text x="334" y="15">Compuerta humana</text>
+    <rect x="462" y="4" width="16" height="14" rx="3" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+    <text x="484" y="15">IA acotada</text>
+  </g>
+
+  <!-- ==================== PREVENTION BAR (TOP) ==================== -->
+  <rect x="30" y="88" width="1310" height="68" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="48" y="109" fill="#065f46" font-size="13" font-weight="700">CAPA DE PREVENCIÓN (SHIFT-LEFT &amp; ADMISIÓN) — Evita que nuevas vulnerabilidades entren a producción</text>
+  <g font-size="12" fill="#064e3b">
+    <rect x="48" y="118" width="385" height="28" rx="5" fill="#ffffff" stroke="#34d399"/>
+    <text x="60" y="136"><tspan font-weight="700">CI Security Gate (--gate):</tspan> bloquea PR si entra P1/P2 accionable</text>
+    <rect x="450" y="118" width="425" height="28" rx="5" fill="#ffffff" stroke="#34d399"/>
+    <text x="462" y="136"><tspan font-weight="700">Admisión en Clúster (Kyverno):</tspan> impide desplegar imágenes críticas con fix</text>
+    <rect x="892" y="118" width="430" height="28" rx="5" fill="#ffffff" stroke="#34d399"/>
+    <text x="904" y="136"><tspan font-weight="700">Higiene continua:</tspan> Renovate + Imágenes Base Golden semanales + SBOM</text>
+  </g>
+
+  <!-- ==================== AUDIT SIDEBAR (RIGHT) ==================== -->
+  <rect x="1365" y="88" width="205" height="1020" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="1467" y="116" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700">TRAZABILIDAD</text>
+  <text x="1467" y="134" text-anchor="middle" fill="#475569" font-size="11">Log Inmutable (audit.jsonl)</text>
+  <line x1="1385" y1="146" x2="1550" y2="146" stroke="#cbd5e1"/>
+  <g font-size="11.5" fill="#334155">
+    <rect x="1382" y="162" width="171" height="62" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="1394" y="182" font-weight="700">Append-Only + SHA-256</text>
+    <text x="1394" y="199">Cada evento encadena el</text>
+    <text x="1394" y="214">hash previo (--verify-audit)</text>
+
+    <rect x="1382" y="242" width="171" height="92" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="1394" y="262" font-weight="700">Qué registra cada etapa:</text>
+    <text x="1394" y="280">• SHA-256 del JSON crudo</text>
+    <text x="1394" y="296">• Regla y desglose de score</text>
+    <text x="1394" y="312">• Modelo + prompt_version</text>
+    <text x="1394" y="328">• Aprobador humano / SLA</text>
+
+    <rect x="1382" y="354" width="171" height="92" rx="6" fill="#fef2f2" stroke="#ef4444"/>
+    <text x="1394" y="374" fill="#991b1b" font-weight="700">Alerta AppSec</text>
+    <text x="1394" y="392" fill="#7f1d1d">Si tampering_suspected:</text>
+    <text x="1394" y="408" fill="#7f1d1d">investiga fuente del</text>
+    <text x="1394" y="424" fill="#7f1d1d">advisory y exige firma</text>
+    <text x="1394" y="440" fill="#7f1d1d">AppSec (ej. vuln-003)</text>
+
+    <rect x="1382" y="466" width="171" height="148" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="1394" y="486" font-weight="700">Guardrails de IA</text>
+    <text x="1394" y="504">• Sin permiso de cierre</text>
+    <text x="1394" y="520">• Rechaza downgrades</text>
+    <text x="1394" y="536">• Valida fixedVersion</text>
+    <text x="1394" y="552">• Detecta contradicción</text>
+    <text x="1394" y="568">  entre código y LLM</text>
+    <text x="1394" y="586">• Probado en vivo con</text>
+    <text x="1394" y="602">  --llm compromised</text>
+
+    <rect x="1382" y="634" width="171" height="156" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="1394" y="654" font-weight="700">Matriz de Autonomía</text>
+    <text x="1394" y="672">Autónomo solo si cumple:</text>
+    <text x="1394" y="690">1. Reversible</text>
+    <text x="1394" y="706">2. Radio acotado</text>
+    <text x="1394" y="722">3. Verificable (CI/scan)</text>
+    <text x="1394" y="738">4. Entrada estructurada</text>
+    <text x="1394" y="758" fill="#0f766e" font-weight="600">Credenciales pipeline:</text>
+    <text x="1394" y="774">Sin merge prod ni deploy</text>
+
+    <rect x="1382" y="810" width="171" height="158" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="1394" y="830" font-weight="700">SLAs y Escalamiento</text>
+    <text x="1394" y="848">• P1 Critical: 24 horas</text>
+    <text x="1394" y="864">• P2 High: 7 días</text>
+    <text x="1394" y="880">• P3 Medium: 30 días</text>
+    <text x="1394" y="896">• P4 Low: 90 días</text>
+    <text x="1394" y="916">Si SLA vence ⇒ escala</text>
+    <text x="1394" y="932">a Engineering Manager</text>
+    <text x="1394" y="948">+ bloqueo de release</text>
+
+    <rect x="1382" y="990" width="171" height="98" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="1394" y="1010" font-weight="700">Métricas de Gobierno</text>
+    <text x="1394" y="1028">• MTTR por P1..P4</text>
+    <text x="1394" y="1044">• % remediado autónomo</text>
+    <text x="1394" y="1060">• Muestreo semanal N/A</text>
+    <text x="1394" y="1076">• Excepciones por vencer</text>
+  </g>
+
+  <!-- ==================== ROW 1: SCANNERS -> INGEST -> SANITIZE -> ENRICH ==================== -->
+  <!-- Scanners box -->
+  <rect x="30" y="176" width="240" height="148" rx="8" fill="#ffffff" stroke="#64748b" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="150" y="198" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="700">FUENTES (Escáneres)</text>
+  <g font-size="11.5" fill="#334155">
+    <rect x="44" y="208" width="212" height="24" rx="4" fill="#f1f5f9"/><text x="54" y="224">• Dependency (npm / PyPI / OSV)</text>
+    <rect x="44" y="236" width="212" height="24" rx="4" fill="#f1f5f9"/><text x="54" y="252">• SAST código propio (Semgrep)</text>
+    <rect x="44" y="264" width="212" height="24" rx="4" fill="#f1f5f9"/><text x="54" y="280">• Container images (Trivy / Grype)</text>
+    <rect x="44" y="292" width="212" height="24" rx="4" fill="#f1f5f9"/><text x="54" y="308">• Host / Kernel Linux (agentes/oval)</text>
+  </g>
+
+  <!-- Trust boundary line between Scanners and Ingest -->
+  <line x1="286" y1="168" x2="286" y2="332" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="5,4"/>
+  <rect x="242" y="160" width="90" height="16" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="287" y="171" text-anchor="middle" fill="#991b1b" font-size="9" font-weight="700">FRONTERA TLS</text>
+
+  <!-- Step 1: Ingest -->
+  <line x1="270" y1="250" x2="306" y2="250" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="244" y="294" width="86" height="28" rx="4" fill="#fff1f2" stroke="#fda4af"/>
+  <text x="287" y="306" text-anchor="middle" fill="#9f1239" font-size="8.5" font-weight="700">Prod: TLS 1.3</text>
+  <text x="287" y="317" text-anchor="middle" fill="#9f1239" font-size="8">mTLS / OIDC / HMAC</text>
+  <rect x="310" y="202" width="215" height="96" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#sh)"/>
+  <text x="324" y="225" fill="#0369a1" font-size="13" font-weight="700">1. Ingesta + Normalización</text>
+  <text x="324" y="245" fill="#334155" font-size="11.5">• Esquema canónico + SHA-256</text>
+  <text x="324" y="263" fill="#334155" font-size="11.5">• Valida tipos y rangos CVSS</text>
+  <text x="324" y="281" fill="#334155" font-size="11.5">• Separa structured vs free_text</text>
+
+  <!-- Step 2: Sanitize -->
+  <line x1="525" y1="250" x2="561" y2="250" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="565" y="202" width="245" height="96" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#sh)"/>
+  <text x="579" y="225" fill="#0369a1" font-size="13" font-weight="700">2. Sanitización Anti-Injection</text>
+  <text x="579" y="245" fill="#334155" font-size="11.5">• Encapsula en &lt;untrusted_data&gt;</text>
+  <text x="579" y="263" fill="#334155" font-size="11.5">• Detecta órdenes a IA / claims falsos</text>
+  <text x="579" y="281" fill="#b91c1c" font-size="11.5" font-weight="600">• Flag tampering_suspected → AppSec</text>
+  <!-- Dashed alert to AppSec -->
+  <path d="M 688 202 L 688 176 L 1352 176 L 1352 385 L 1378 385" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrRed)"/>
+
+  <!-- Step 3: Enrich -->
+  <line x1="810" y1="250" x2="848" y2="250" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="852" y="202" width="240" height="96" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#sh)"/>
+  <text x="866" y="225" fill="#0369a1" font-size="13" font-weight="700">3. Enriquecimiento</text>
+  <text x="866" y="245" fill="#334155" font-size="11.5">• CMDB: dueño, entorno, exposición</text>
+  <text x="866" y="263" fill="#334155" font-size="11.5">• Threat Intel: FIRST EPSS + CISA KEV</text>
+  <text x="866" y="281" fill="#334155" font-size="11.5">• Dato ausente ⇒ asume peor caso</text>
+
+  <!-- Step 4: Dedup -->
+  <line x1="1092" y1="250" x2="1126" y2="250" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="1130" y="202" width="210" height="96" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#sh)"/>
+  <text x="1144" y="225" fill="#0369a1" font-size="13" font-weight="700">4. Dedup + Causa Raíz</text>
+  <text x="1144" y="245" fill="#334155" font-size="11.5">• Clave CVE+paquete+versión</text>
+  <text x="1144" y="263" fill="#334155" font-size="11.5">• Agrupa 004+005 en baseImage</text>
+  <text x="1144" y="281" fill="#334155" font-size="11.5">• 1 fix raíz, cierre por instancia</text>
+
+  <!-- ==================== ROW 2: APPLICABILITY -> SCORING -> BOUNDED AI + GUARDRAILS ==================== -->
+  <!-- Connector from Dedup down to Applicability -->
+  <path d="M 1235 298 L 1235 344 L 415 344 L 415 370" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Step 5: Applicability Diamond-Box -->
+  <polygon points="415,374 555,428 415,482 275,428" fill="#ecfeff" stroke="#0d9488" stroke-width="2" filter="url(#sh)"/>
+  <text x="415" y="416" text-anchor="middle" fill="#0f766e" font-size="12.5" font-weight="700">5. ¿Aplica a Linux?</text>
+  <text x="415" y="434" text-anchor="middle" fill="#115e59" font-size="11">Solo evidencia estructurada</text>
+  <text x="415" y="450" text-anchor="middle" fill="#115e59" font-size="10.5">(platforms / distro / CMDB)</text>
+
+  <!-- Left branch: N/A -->
+  <line x1="275" y1="428" x2="232" y2="428" stroke="#0d9488" stroke-width="2" marker-end="url(#arrTeal)"/>
+  <text x="255" y="420" text-anchor="middle" fill="#0f766e" font-size="11" font-weight="700">No</text>
+  <rect x="30" y="386" width="200" height="84" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.8" filter="url(#sh)"/>
+  <text x="44" y="409" fill="#334155" font-size="12.5" font-weight="700">Cierre N/A Documentado</text>
+  <text x="44" y="428" fill="#475569" font-size="11">• Autónomo si dato confiable</text>
+  <text x="44" y="445" fill="#d97706" font-size="11" font-weight="600">• Humano (AppSec) si ambiguo</text>
+  <text x="44" y="461" fill="#475569" font-size="11">• Revalidación a 180 días</text>
+
+  <!-- Right branch: Yes -> Step 6 Scoring -->
+  <line x1="555" y1="428" x2="606" y2="428" stroke="#0d9488" stroke-width="2" marker-end="url(#arrTeal)"/>
+  <text x="580" y="420" text-anchor="middle" fill="#0f766e" font-size="11" font-weight="700">Sí</text>
+
+  <rect x="610" y="376" width="285" height="104" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#sh)"/>
+  <text x="624" y="399" fill="#0369a1" font-size="13" font-weight="700">6. Scoring Determinista (0–100)</text>
+  <text x="624" y="418" fill="#334155" font-size="11.5">• CVSS(20)+Exploit(30)+Exp(20)+Env(15)+Ctx(15)</text>
+  <text x="624" y="436" fill="#334155" font-size="11.5">• Mult: devDep ×0.5 · runningTasks=0 ×0.3</text>
+  <text x="624" y="454" fill="#0f172a" font-size="11.5" font-weight="600">• Suelos duros: Exploit+Prod+Internet ⇒ P1</text>
+  <text x="624" y="471" fill="#475569" font-size="11">• SLA: P1 24h | P2 7d | P3 30d | P4 90d</text>
+
+  <!-- Bounded AI + Guardrails -->
+  <line x1="895" y1="428" x2="925" y2="428" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="929" y="376" width="411" height="104" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2" filter="url(#sh)"/>
+  <text x="942" y="399" fill="#5b21b6" font-size="13" font-weight="700">7. Asistente IA Acotado (Gemini) + Guardrails en Código</text>
+  <text x="942" y="418" fill="#334155" font-size="11">• Salida cifrada HTTPS/TLS 1.3 (header x-goog-api-key) + JSON schema</text>
+  <text x="942" y="436" fill="#5b21b6" font-size="11" font-weight="600">• Guardrail: PROHIBIDO cerrar o bajar prioridad; bloquea versiones alucinadas</text>
+  <text x="942" y="454" fill="#334155" font-size="11">• Solo puede mantener, pedir revisión o sugerir subir 1 nivel</text>
+  <text x="942" y="471" fill="#475569" font-size="10.8">• Degradación segura: si la API cae (--llm off), el motor opera idéntico</text>
+
+  <!-- ==================== ROW 3: SPLIT CODE VS OS ==================== -->
+  <path d="M 1140 480 L 1140 508 L 685 508 L 685 530" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <polygon points="685,532 790,564 685,596 580,564" fill="#ecfeff" stroke="#0d9488" stroke-width="2"/>
+  <text x="685" y="568" text-anchor="middle" fill="#0f766e" font-size="12.5" font-weight="700">8. Enrutamiento</text>
+
+  <!-- Left container: CODE -->
+  <path d="M 580 564 L 345 564 L 345 604" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#arrTeal)"/>
+  <rect x="30" y="608" width="635" height="330" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.8"/>
+  <text x="48" y="632" fill="#1d4ed8" font-size="14" font-weight="700">FLUJO A · VULNERABILIDADES DE CÓDIGO (Dueño: Equipo del Repo)</text>
+  <text x="48" y="650" fill="#475569" font-size="11.5">Unidad de trabajo: 1 repositorio (npm, PyPI, código propio SAST)</text>
+
+  <!-- Code Subflow 1: devDependency -->
+  <rect x="46" y="666" width="290" height="84" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="58" y="686" fill="#0369a1" font-size="12" font-weight="700">A1. Dependencia solo Build (devDep)</text>
+  <text x="58" y="704" fill="#334155" font-size="11">• Abre PR bump patch/minor (vuln-002)</text>
+  <text x="58" y="721" fill="#059669" font-size="11" font-weight="700">• AUTO-MERGE autónomo si CI + scan verde</text>
+  <text x="58" y="738" fill="#475569" font-size="10.5">• Verifica que no viaje en imagen final</text>
+
+  <!-- Code Subflow 2: Runtime Dependency -->
+  <rect x="354" y="666" width="295" height="84" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="366" y="686" fill="#0369a1" font-size="12" font-weight="700">A2. Dependencia Runtime Producción</text>
+  <text x="366" y="704" fill="#334155" font-size="11">• Abre PR a fixedVersion + tests CI (001, 003)</text>
+  <text x="366" y="721" fill="#334155" font-size="11">• Si P1: alerta inmediata + WAF temporal</text>
+  <text x="366" y="738" fill="#b45309" font-size="10.5" font-weight="600">• Prohibido auto-merge en runtime prod</text>
+
+  <!-- Human Gate Code Runtime -->
+  <line x1="501" y1="750" x2="501" y2="774" stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="354" y="778" width="295" height="54" rx="25" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="501" y="800" text-anchor="middle" fill="#92400e" font-size="11.5" font-weight="700">HUMANO: Team Lead aprueba PR</text>
+  <text x="501" y="817" text-anchor="middle" fill="#b45309" font-size="10.5">(+ AppSec si semver major o tampering_suspected)</text>
+
+  <!-- Code Subflow 3: SAST -->
+  <rect x="46" y="768" width="290" height="72" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="58" y="788" fill="#0369a1" font-size="12" font-weight="700">A3. Código Propio / SAST (ej. SQLi)</text>
+  <text x="58" y="806" fill="#334155" font-size="11">• Ticket con archivo:línea + CWE</text>
+  <text x="58" y="823" fill="#334155" font-size="11">• IA propone borrador de fix (Draft PR)</text>
+
+  <line x1="191" y1="840" x2="191" y2="862" stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="46" y="866" width="290" height="52" rx="25" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="191" y="888" text-anchor="middle" fill="#92400e" font-size="11.5" font-weight="700">HUMANO: Team Lead + AppSec</text>
+  <text x="191" y="904" text-anchor="middle" fill="#b45309" font-size="10.5">Revisan lógica y aprueban merge</text>
+
+  <!-- Right container: OS -->
+  <path d="M 790 564 L 1025 564 L 1025 604" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#arrTeal)"/>
+  <rect x="690" y="608" width="650" height="330" rx="10" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.8"/>
+  <text x="708" y="632" fill="#0f766e" font-size="14" font-weight="700">FLUJO B · SISTEMA OPERATIVO LINUX (Dueño: Plataforma / DevOps)</text>
+  <text x="708" y="650" fill="#475569" font-size="11.5">Unidad de trabajo: 1 capa raíz impacta N imágenes o flota de hosts (paquetes Debian, librerías, kernel)</text>
+
+  <!-- OS Subflow 1: Base Image -->
+  <rect x="706" y="666" width="202" height="104" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="716" y="686" fill="#0369a1" font-size="12" font-weight="700">B1. Imagen Base (004+005)</text>
+  <text x="716" y="704" fill="#334155" font-size="11">• PR al Dockerfile raíz</text>
+  <text x="716" y="721" fill="#334155" font-size="11">• 1 ticket único de plataforma</text>
+  <text x="716" y="738" fill="#334155" font-size="11">• Dispara rebuild en cascada</text>
+  <text x="716" y="755" fill="#475569" font-size="10.5">  de 38 imágenes hijas</text>
+
+  <line x1="807" y1="770" x2="807" y2="850" stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="706" y="854" width="202" height="64" rx="25" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="807" y="878" text-anchor="middle" fill="#92400e" font-size="11.5" font-weight="700">HUMANO: DevOps</text>
+  <text x="807" y="894" text-anchor="middle" fill="#b45309" font-size="10.5">Aprueba rollout canary → prod</text>
+  <text x="807" y="908" text-anchor="middle" fill="#b45309" font-size="10">(+ AppSec si P1)</text>
+
+  <!-- OS Subflow 2: Unused Image -->
+  <rect x="918" y="666" width="202" height="104" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="928" y="686" fill="#0369a1" font-size="12" font-weight="700">B2. Sin Tareas Vivas (006)</text>
+  <text x="928" y="704" fill="#059669" font-size="11" font-weight="600">• Autónomo: bloquea redeploy</text>
+  <text x="928" y="721" fill="#334155" font-size="11">• Propone RETIRO (no parchar)</text>
+  <text x="928" y="738" fill="#334155" font-size="11">• Verifica cron/batch previos</text>
+  <text x="928" y="755" fill="#475569" font-size="10.5">• Si reactiva ⇒ reabre sin ×0.3</text>
+
+  <line x1="1019" y1="770" x2="1019" y2="850" stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="918" y="854" width="202" height="64" rx="25" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="1019" y="878" text-anchor="middle" fill="#92400e" font-size="11.5" font-weight="700">HUMANO: Dueño Servicio</text>
+  <text x="1019" y="895" text-anchor="middle" fill="#b45309" font-size="10.5">Confirma baja definitiva</text>
+
+  <!-- OS Subflow 3: Kernel / Hosts -->
+  <rect x="1130" y="666" width="196" height="104" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="1140" y="686" fill="#0369a1" font-size="12" font-weight="700">B3. Kernel / Servidores</text>
+  <text x="1140" y="704" fill="#334155" font-size="11">• Ticket con paquetes/hosts</text>
+  <text x="1140" y="721" fill="#334155" font-size="11">• Plan ansible / unattended</text>
+  <text x="1140" y="738" fill="#334155" font-size="11">• Requiere drain + reboot</text>
+  <text x="1140" y="755" fill="#475569" font-size="10.5">  rolling de nodos</text>
+
+  <line x1="1228" y1="770" x2="1228" y2="850" stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+  <rect x="1130" y="854" width="196" height="64" rx="25" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="1228" y="878" text-anchor="middle" fill="#92400e" font-size="11.5" font-weight="700">HUMANO: DevOps</text>
+  <text x="1228" y="895" text-anchor="middle" fill="#b45309" font-size="10.5">Ejecuta en ventana mant.</text>
+
+  <!-- ==================== ROW 4: VERIFICATION, SLA & CLOSURE ==================== -->
+  <line x1="345" y1="938" x2="345" y2="992" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="1015" y1="938" x2="1015" y2="992" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="230" y="996" width="620" height="92" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2.2" filter="url(#sh)"/>
+  <text x="250" y="1022" fill="#0369a1" font-size="13.5" font-weight="700">9. Verificación Objetiva por Instancia (Único Árbitro de Cierre)</text>
+  <text x="250" y="1043" fill="#334155" font-size="11.5">• Ni el LLM ni un humano cierran por declaración: el escáner re-evalúa cada repo, imagen hija o servidor.</text>
+  <text x="250" y="1062" fill="#334155" font-size="11.5">• Si el CVE sigue presente o vence el SLA ⇒ alerta, escalamiento automático y re-priorización.</text>
+  <text x="250" y="1079" fill="#475569" font-size="11">• Reapertura automática si cambia el contexto (entra a KEV, aparece exploit público o se reactiva imagen).</text>
+
+  <line x1="850" y1="1042" x2="926" y2="1042" stroke="#0d9488" stroke-width="2.2" marker-end="url(#arrTeal)"/>
+  <text x="888" y="1033" text-anchor="middle" fill="#0f766e" font-size="11" font-weight="700">Limpio</text>
+
+  <rect x="930" y="1002" width="410" height="80" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="2.2" filter="url(#sh)"/>
+  <text x="950" y="1028" fill="#065f46" font-size="14" font-weight="700">10. Cierre Verificado o Excepción con Caducidad</text>
+  <text x="950" y="1049" fill="#064e3b" font-size="11.5">• Hallazgo cerrado con hash del escaneo limpio en audit.jsonl</text>
+  <text x="950" y="1068" fill="#064e3b" font-size="11.5">• Riesgo aceptado exige firma AppSec + Team Lead y fecha de expiración</text>
+</svg>

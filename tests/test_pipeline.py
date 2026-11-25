@@ -10,8 +10,8 @@ sys.path.insert(0, str(ROOT))
 
 from pipeline.audit import verify  # noqa: E402
 from pipeline.engine import run  # noqa: E402
-from pipeline.llm_agent import apply_guardrails, is_downgrade  # noqa: E402
-from pipeline.policy import bump_type  # noqa: E402
+from pipeline.llm_agent import _parse_llm_json, apply_guardrails, is_downgrade  # noqa: E402
+from pipeline.policy import bump_type, evaluate_gate  # noqa: E402
 from pipeline.sanitize import inspect_text  # noqa: E402
 
 DATA = ROOT / "data"
@@ -109,6 +109,14 @@ class TestPromptInjection(unittest.TestCase):
         self.assertFalse(inspect_text("A heap overflow occurs when rendering crafted fonts.")
                          ["injection_patterns"])
 
+    def test_legitimate_ai_library_advisory_not_flagged(self):
+        # Un advisory legitimo de una libreria de IA menciona "LLM", "language models" y "AI assistants"
+        # sin dar instrucciones al evaluador: NO debe disparar falsas alertas de manipulacion.
+        legit = ("A template injection vulnerability in langchain-core allows remote attackers "
+                 "to manipulate LLM responses when language models parse untrusted inputs in "
+                 "automated tools and AI assistants.")
+        self.assertFalse(inspect_text(legit)["injection_patterns"])
+
 
 class TestGuardrails(unittest.TestCase):
     CTX = {"structured_fields": {"version": "2.3.0", "fixed_version": "2.3.2", "cvss": 7.5, "epss": 0.41},
@@ -168,6 +176,39 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(bump_type("4.2.1", "4.2.3"), "patch")
         self.assertEqual(bump_type("1.9.0", "2.0.0"), "major")
         self.assertEqual(bump_type("3.0.15-1", "3.0.17-1"), "distro")
+
+    def test_parse_llm_json_strips_markdown_fences(self):
+        raw = '```json\n{"summary": "ok"}\n```'
+        self.assertEqual(_parse_llm_json(raw), {"summary": "ok"})
+
+    def test_differential_gate_with_baseline(self):
+        d_map, out = run_pipeline()
+        decisions = list(d_map.values())
+        baseline_file = out / "baseline.json"
+        baseline_file.write_text(
+            json.dumps({"decisions": [x.to_dict() for x in decisions]}),
+            encoding="utf-8",
+        )
+        # 1) Mismo estado que el baseline: no bloquea PRs ajenos por deuda previa
+        blocking, suppressed = evaluate_gate(decisions, baseline_file)
+        self.assertEqual(blocking, [])
+        self.assertEqual(suppressed, 3)
+
+        # 2) Entra un hallazgo P2 nuevo (vuln-102, SAST) que no estaba en baseline -> bloquea solo el nuevo
+        d_extra, _ = run_pipeline(extra=True)
+        blocking_new, suppressed_new = evaluate_gate(list(d_extra.values()), baseline_file)
+        self.assertEqual([b.group_id for b in blocking_new], ["vuln-102"])
+        self.assertEqual(suppressed_new, 3)
+
+        # 3) Un hallazgo preexistente empeora de P3 a P1 -> bloquea
+        degraded_base = out / "baseline_p3.json"
+        base_copy = [x.to_dict() for x in decisions]
+        for item in base_copy:
+            if item["group_id"] == "vuln-001":
+                item["priority"] = "P3"
+        degraded_base.write_text(json.dumps({"decisions": base_copy}), encoding="utf-8")
+        blocking_deg, _ = evaluate_gate(decisions, degraded_base)
+        self.assertEqual([b.group_id for b in blocking_deg], ["vuln-001"])
 
 
 if __name__ == "__main__":

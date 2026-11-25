@@ -5,11 +5,13 @@ y basada en entradas confiables. Todo lo demas requiere aprobacion humana.
 """
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import re
 
 from . import config as C
 from .dedup import Group
-from .models import Action
+from .models import Action, Decision
 
 
 def bump_type(old: str | None, new: str | None) -> str:
@@ -136,3 +138,42 @@ def plan(g: Group, priority: str, applicable: bool, na_reasons: list[str]) -> li
     acts.append(Action("verify_and_close", "Cerrar SOLO cuando el re-escaneo confirme que desaparecio "
                        "(por instancia)", True))
     return acts
+
+
+def evaluate_gate(decisions: list[Decision], baseline_path: Path | None = None) -> tuple[list[Decision], int]:
+    """Evalua el gate de CI.
+
+    - Sin `baseline_path`: bloquea ante cualquier P1/P2 accionable.
+    - Con `baseline_path` (report.json previo): modo diferencial; solo bloquea si un P1/P2 es NUEVO
+      o si su prioridad EMPEORO respecto al baseline (evita frenar PRs ajenos por deuda historica).
+    Devuelve (decisiones_bloqueantes, cantidad_suprimida_por_baseline).
+    """
+    candidates = [d for d in decisions if d.priority in ("P1", "P2")]
+    if not baseline_path:
+        return candidates, 0
+
+    data = json.loads(Path(baseline_path).read_text(encoding="utf-8"))
+    known: dict[str, str] = {}
+    for item in data.get("decisions", data if isinstance(data, list) else []):
+        prio = item.get("priority")
+        if not prio:
+            continue
+        if item.get("group_id"):
+            known[item["group_id"]] = prio
+        for fid in item.get("finding_ids", []):
+            known[fid] = prio
+
+    blocking: list[Decision] = []
+    suppressed = 0
+    for d in candidates:
+        prev_prios = [known[fid] for fid in d.finding_ids if fid in known]
+        if not prev_prios and d.group_id in known:
+            prev_prios = [known[d.group_id]]
+        if not prev_prios or len(prev_prios) < len(d.finding_ids):
+            blocking.append(d)  # hallazgo nuevo no registrado en el baseline
+        elif any(C.PRIORITY_ORDER[d.priority] < C.PRIORITY_ORDER[p] for p in prev_prios):
+            blocking.append(d)  # se agravo (ej. era P3 y salio exploit publico -> P1)
+        else:
+            suppressed += 1
+    return blocking, suppressed
+

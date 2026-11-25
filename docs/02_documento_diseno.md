@@ -35,17 +35,16 @@ Una acción es **autónoma solo si cumple las cuatro condiciones**: es reversibl
 ## 4. Riesgos del propio pipeline
 | Riesgo | Control |
 |---|---|
-| **Prompt injection** en advisories (vuln-003) | El texto libre se aísla en `<untrusted_data>` y solo puede *subir* el riesgo. Detector de patrones que marca `tampering_suspected` y alerta a AppSec. La IA no tiene en su esquema la opción "cerrar" ni "bajar" |
+| **Prompt injection** en advisories (vuln-003) | El texto libre se aísla en `<untrusted_data>` y solo puede *subir* el riesgo. Detector de patrones directivos (sin ruido en CVEs legítimos de librerías de IA) que marca `tampering_suspected` y alerta a AppSec. La IA no tiene en su esquema la opción "cerrar" ni "bajar" |
 | LLM comprometido o que alucina | Guardrails en código: validación del esquema, rechazo de downgrades, rechazo de versiones no presentes en el input y flag si la IA "no ve" la inyección que el código sí detectó. Probado con un proveedor `compromised` simulado |
 | Falso negativo crítico | Peor caso ante datos faltantes; prohibido bajar P1/P2 sin AppSec; muestreo semanal de cierres; reapertura si cambia el contexto (KEV, exploit nuevo, imagen reactivada) |
 | Auto-merge dañino o supply chain | Solo devDeps patch/minor; CI obligatorio; lockfile con hash; edad mínima del release; registries en allowlist |
-| Escáner manipulado o desactualizado | Fuentes autenticadas, frescura máxima, reconciliación contra SBOM |
-| Abuso de credenciales del pipeline | Token de mínimo privilegio: abre PRs y tickets; **no** puede hacer merge en ramas protegidas ni desplegar |
+| Tránsito, escáneres y credenciales | Ingesta en prod sobre **HTTPS (TLS 1.3) + mTLS / HMAC / OIDC** (vs. JSON local en MVP) y salida a Gemini por TLS 1.3 con header `x-goog-api-key`. Frescura, SBOM y token sin merge en prod ni deploy |
 | Pérdida de trazabilidad o log alterado | Log append-only con **cadena de hashes** (`--verify-audit` detecta ediciones); registra entrada, regla, modelo y versión del prompt |
 | Caída del LLM | Degradación segura: la decisión no depende de la IA (`--llm off` da el mismo resultado) |
 
 ## 5. Prevenir, no solo reaccionar
-El **mismo motor** corre como **gate en CI** (`--gate`: exit 2 si hay P1/P2 accionables). Se complementa con un control de admisión en el clúster (Kyverno o Gatekeeper) que bloquea imágenes con críticos que ya tienen fix, Renovate para actualizaciones continuas, imágenes base *golden* con rebuild semanal y un SBOM por cada build. Métricas: MTTR por prioridad, % resuelto sin humanos, cierres reabiertos.
+El **mismo motor** corre como **gate en CI** (`--gate --baseline`: modo diferencial que falla con exit 2 solo si el PR introduce P1/P2 **nuevos o agravados**, sin bloquear equipos por deuda histórica). Se complementa con un control de admisión en el clúster (Kyverno o Gatekeeper) que bloquea imágenes con críticos que ya tienen fix, Renovate para actualizaciones continuas, imágenes base *golden* con rebuild semanal y un SBOM por cada build. Métricas: MTTR por prioridad, % resuelto sin humanos, cierres reabiertos.
 
 ## 6. Tecnologías y por qué
 - **Python 3 sin dependencias** en el núcleo: auditable, portable y corre en cualquier runner de CI.

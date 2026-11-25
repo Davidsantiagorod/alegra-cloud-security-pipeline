@@ -12,15 +12,18 @@ import re
 
 from .models import Finding
 
+# Solo patrones DIRECTIVOS/IMPERATIVOS dirigidos al evaluador.
+# Se evita coincidir con menciones sustantivas de "LLM" o "AI assistant" para no generar
+# falsos positivos en advisories legitimos de librerias de IA (ej. LangChain, LiteLLM).
 INJECTION_PATTERNS = [
-    r"\bnote for (automated|ai)\b",
-    r"\b(automated tools?|ai assistants?|language models?|llms?)\b",
-    r"\bignore (all |any )?(previous|prior|above)\b",
-    r"\bmark (it|this|the finding)? ?as\b",
-    r"\b(close|dismiss|suppress) (it|this|the finding)\b",
-    r"\bas an? (ai|assistant|language model)\b",
+    r"\b(note|instructions?|message|important|attention)\s+(for|to)\s+[\w\s,/-]{0,40}\b(automated|ai|assistants?|scanners?|llms?|models?|tools?)\b",
+    r"\b(dear|hey|hello)\s+(ai|assistant|llm|language model)\b",
+    r"\bignore (all |any )?(previous|prior|above|system)\b",
+    r"\bmark (it|this|the finding|this finding|this issue|cve)?\s*as\s*(not applicable|n/?a|false positive|safe|resolved|benign|low)\b",
+    r"\b(close|dismiss|suppress|downgrade) (it|this|the finding|this finding|this issue)\b",
+    r"\bas an? (ai|assistant|language model|security agent)\b",
     r"\bsystem prompt\b",
-    r"\byou (must|should) (now )?(respond|output|classify)\b",
+    r"\byou (must|should) (now )?(respond|output|classify|return|ignore)\b",
 ]
 
 # Afirmaciones de aplicabilidad que SOLO se aceptan si un campo estructurado las respalda

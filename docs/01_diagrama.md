@@ -1,5 +1,9 @@
 # ① Diagrama del pipeline
 
+![Diagrama de arquitectura del pipeline](01_diagrama.png)
+
+> Formatos listos para entrega: [PNG alta resolución](01_diagrama.png) · [SVG vectorial](01_diagrama.svg) · Fuente editable Mermaid abajo.
+
 ```mermaid
 flowchart TD
     subgraph SRC["Escaneres"]
@@ -9,7 +13,7 @@ flowchart TD
         S4["host-scanner<br/>(servidores)"]
     end
 
-    S1 & S2 & S3 & S4 --> N["1. Ingesta + normalizacion<br/>esquema unico, validacion"]
+    S1 & S2 & S3 & S4 -- "Prod: HTTPS TLS 1.3 + mTLS/OIDC/HMAC" --> N["1. Ingesta + normalizacion<br/>esquema unico, SHA-256"]
     N --> SAN["2. Sanitizacion<br/>texto libre = DATO no confiable<br/>detector de prompt injection"]
     SAN --> EN["3. Enriquecimiento<br/>CMDB: dueno, entorno, exposicion<br/>EPSS / CISA KEV"]
     EN --> DD["4. Dedup + causa raiz<br/>CVE+paquete+version<br/>imagen base = unidad de fix"]

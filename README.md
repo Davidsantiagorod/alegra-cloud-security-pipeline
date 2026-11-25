@@ -6,11 +6,11 @@ Un motor determinista decide, la IA (Gemini) asiste y lo irreversible pasa por u
 ## Entregables
 | # | Entregable | Ubicación |
 |---|---|---|
-| ① | Diagrama del pipeline | [docs/01_diagrama.md](docs/01_diagrama.md) |
-| ② | Documento de diseño (2 páginas) | [docs/02_documento_diseno.md](docs/02_documento_diseno.md) |
-| ③ | Resultado sobre los 6 ejemplos | [docs/03_resultados.md](docs/03_resultados.md) |
-| ④ | Artefacto funcional | este repo (`main.py`, `pipeline/`) |
-| ⑤ | Anexos de construcción (prompts e iteraciones) | [anexos/](anexos/) |
+| ① | Diagrama del pipeline | [docs/01_diagrama.png](docs/01_diagrama.png) · [SVG](docs/01_diagrama.svg) · [Mermaid](docs/01_diagrama.md) |
+| ② | Documento de diseño (exactamente 2 páginas) | [docs/02_documento_diseno.pdf](docs/02_documento_diseno.pdf) · [Markdown](docs/02_documento_diseno.md) |
+| ③ | Resultado sobre los 6 ejemplos (+3 casos extra) | [docs/03_resultados.md](docs/03_resultados.md) |
+| ④ | Artefacto funcional (cero dependencias) | este repo (`main.py`, `pipeline/`, `tests/`) |
+| ⑤ | Anexos de construcción (prompts, corrida real con Gemini y bitácora) | [anexos/](anexos/) |
 
 ## Ejecutar (sin dependencias, sin API key)
 Requiere Python 3.10 o superior.
@@ -19,16 +19,17 @@ python main.py                    # 6 ejemplos del reto (IA en modo mock offline
 python main.py --include-extra    # + casos propios: N/A legítimo, SAST, kernel
 python main.py --llm compromised  # simula un LLM que obedece la prompt injection -> guardrails la bloquean
 python main.py --llm off          # sin IA: mismas decisiones (la IA no es punto único de falla)
-python main.py --gate             # modo CI (prevención): exit 2 si hay P1/P2 accionables
+python main.py --gate             # modo CI estricto: exit 2 si hay P1/P2 accionables
+python main.py --gate --baseline output/report.json  # modo CI diferencial: solo bloquea P1/P2 nuevos o agravados
 python main.py --verify-audit     # verifica la integridad del log (cadena de hashes)
-python -m unittest discover -s tests -v   # 21 tests
+python -m unittest discover -s tests -v   # 24 tests
 ```
 Salidas en `output/`: `report.md`, `report.json`, `actions/` (PRs y tickets generados en dry-run) y `audit.jsonl`.
 
-### Con Gemini real (opcional, gratis)
+### Con Gemini real (opcional, probado en vivo — ver [Anexo 5](anexos/05_corrida_real_gemini.md))
 ```bash
-pip install -r requirements-llm.txt
-export GEMINI_API_KEY="..."        # PowerShell: $env:GEMINI_API_KEY="..."  (clave gratis en aistudio.google.com)
+# No requiere pip install (usa cliente REST stdlib con fallback automático; soporta google-genai si está instalado)
+export GEMINI_API_KEY="..."        # PowerShell: $env:GEMINI_API_KEY="..."
 python main.py --llm gemini        # modelo configurable con GEMINI_MODEL
 ```
 

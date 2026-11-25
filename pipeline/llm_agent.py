@@ -108,37 +108,110 @@ class CompromisedProvider(MockProvider):
         return out
 
 
+def _parse_llm_json(text: str) -> dict:
+    """Limpia posibles fences ```json ... ``` antes de parsear."""
+    cleaned = (text or "").strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.I)
+        cleaned = re.sub(r"\s*```$", "", cleaned)
+    return json.loads(cleaned)
+
+
 class GeminiProvider:
+    """Conector real a Gemini API.
+
+    Usa el SDK `google-genai` si esta instalado y cae a `urllib.request` (stdlib) si no lo esta,
+    de modo que `--llm gemini` funciona incluso sin instalar dependencias externas.
+    La API key viaja por header `x-goog-api-key` (nunca en la URL) para evitar filtraciones en logs.
+    """
+
+    DEFAULT_MODELS = ("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.1-flash-lite")
+
     def __init__(self, model: str | None = None):
-        try:
-            from google import genai  # noqa: F401  (import perezoso: dependencia opcional)
-            from google.genai import types  # noqa: F401
-        except ImportError as exc:  # pragma: no cover
-            raise RuntimeError("Instala la dependencia opcional: pip install -r requirements-llm.txt") from exc
         key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not key:
-            raise RuntimeError("Define GEMINI_API_KEY (gratis en aistudio.google.com) o usa --llm mock")
-        from google import genai
-        from google.genai import types
-        self._types = types
-        self.client = genai.Client(api_key=key)
-        self.model = model or os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
+            raise RuntimeError("Define GEMINI_API_KEY o usa --llm mock")
+        self._key = key
+        pinned = model or os.environ.get("GEMINI_MODEL")
+        self._candidates = (pinned,) if pinned else self.DEFAULT_MODELS
+        self.model = self._candidates[0]
         self.name = f"gemini:{self.model}"
         self.system_prompt = PROMPT_PATH.read_text(encoding="utf-8")
+        self._client = None
+        self._types = None
+        try:
+            from google import genai
+            from google.genai import types
+            self._types = types
+            self._client = genai.Client(vertexai=False, api_key=key)
+        except ImportError:
+            pass  # usara cliente REST con urllib.request (cero dependencias)
 
-    def analyze(self, ctx: dict) -> dict:  # pragma: no cover (requiere red)
+    def _call_rest_single(self, model_name: str, prompt: str) -> dict:  # pragma: no cover (requiere red)
+        import time
+        import urllib.error
+        import urllib.request
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+        payload = {
+            "systemInstruction": {"parts": [{"text": self.system_prompt}]},
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": 0,
+                "responseMimeType": "application/json",
+                "responseSchema": RESPONSE_SCHEMA,
+            },
+        }
+        data = json.dumps(payload).encode("utf-8")
+        headers = {"Content-Type": "application/json", "x-goog-api-key": self._key}
+        last_err: Exception | None = None
+        for attempt in range(3):
+            try:
+                req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+                with urllib.request.urlopen(req, timeout=25) as resp:
+                    body = json.loads(resp.read().decode("utf-8"))
+                text = body["candidates"][0]["content"]["parts"][0]["text"]
+                return _parse_llm_json(text)
+            except urllib.error.HTTPError as exc:
+                last_err = exc
+                if exc.code in (429, 500, 502, 503, 504) and attempt < 2:
+                    time.sleep(1.5 * (attempt + 1))
+                    continue
+                raise
+            except (TimeoutError, OSError) as exc:
+                last_err = exc
+                if attempt < 2:
+                    time.sleep(1.5 * (attempt + 1))
+                    continue
+                raise
+        raise last_err  # type: ignore[misc]
+
+    def _call_sdk_single(self, model_name: str, prompt: str) -> dict:  # pragma: no cover (requiere red)
         t = self._types
         cfg = dict(system_instruction=self.system_prompt, temperature=0,
                    response_mime_type="application/json")
         try:
-            resp = self.client.models.generate_content(
-                model=self.model, contents=render_user_prompt(ctx),
+            resp = self._client.models.generate_content(
+                model=model_name, contents=prompt,
                 config=t.GenerateContentConfig(**cfg, response_schema=RESPONSE_SCHEMA))
         except Exception:
-            resp = self.client.models.generate_content(
-                model=self.model, contents=render_user_prompt(ctx),
+            resp = self._client.models.generate_content(
+                model=model_name, contents=prompt,
                 config=t.GenerateContentConfig(**cfg))
-        return json.loads(resp.text)
+        return _parse_llm_json(resp.text)
+
+    def analyze(self, ctx: dict) -> dict:  # pragma: no cover (requiere red)
+        prompt = render_user_prompt(ctx)
+        last_exc: Exception | None = None
+        for candidate in self._candidates:
+            try:
+                out = (self._call_rest_single(candidate, prompt)
+                       if self._client is None else self._call_sdk_single(candidate, prompt))
+                self.model = candidate
+                self.name = f"gemini:{candidate}"
+                return out
+            except Exception as exc:
+                last_exc = exc
+        raise last_exc  # type: ignore[misc]
 
 
 def get_provider(name: str):

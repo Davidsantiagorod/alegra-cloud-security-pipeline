@@ -1,0 +1,749 @@
+{
+  "run_id": "719de3565d28",
+  "errors": [],
+  "decisions": [
+    {
+      "group_id": "vuln-001",
+      "finding_ids": [
+        "vuln-001"
+      ],
+      "category": "code",
+      "title": "Remote code execution in xml-fastparse",
+      "priority": "P1",
+      "score": 94.6,
+      "score_breakdown": {
+        "severity": 19.6,
+        "exploitability": 25,
+        "exploitability_reason": "exploit publico",
+        "exposure": 20,
+        "environment": 15,
+        "context": 15,
+        "context_reason": "reachable",
+        "blast_radius_bonus": 0,
+        "multiplier": 1.0,
+        "base": 94.6,
+        "total": 94.6
+      },
+      "sla": "24h",
+      "applicable": true,
+      "owner": "billing",
+      "route": "repo:billing-api",
+      "rationale": [
+        "ecosistema multiplataforma (npm) desplegado en runtime linux"
+      ],
+      "actions": [
+        {
+          "type": "open_pr",
+          "description": "PR en billing-api: xml-fastparse 4.2.1 -> 4.2.3 (patch); CI obligatorio + re-escaneo",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": "actions\\vuln-001__01_open_pr.md"
+        },
+        {
+          "type": "merge",
+          "description": "Merge de dependencia de runtime en produccion: requiere revision humana (posible regresion)",
+          "autonomous": false,
+          "approvers": [
+            "Team Lead (billing)"
+          ],
+          "artifact": null
+        },
+        {
+          "type": "notify",
+          "description": "Notificacion inmediata a billing + AppSec (SLA 24h)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "temp_mitigation",
+          "description": "Mitigacion temporal (regla WAF / feature flag) mientras se despliega el fix",
+          "autonomous": false,
+          "approvers": [
+            "Team Lead (billing)"
+          ],
+          "artifact": null
+        },
+        {
+          "type": "verify_and_close",
+          "description": "Cerrar SOLO cuando el re-escaneo confirme que desaparecio (por instancia)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        }
+      ],
+      "flags": [],
+      "evidence": [
+        {
+          "field": "team",
+          "value": "billing",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-001"
+        },
+        {
+          "field": "environment",
+          "value": "production",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-001"
+        },
+        {
+          "field": "internetFacing",
+          "value": true,
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-001"
+        },
+        {
+          "field": "notes",
+          "value": "funcion vulnerable alcanzable (solo puede subir riesgo)",
+          "source": "free-text",
+          "trusted": false,
+          "finding": "vuln-001"
+        },
+        {
+          "field": "epss",
+          "value": 0.62,
+          "source": "threat-intel@2026-11-25",
+          "trusted": true,
+          "finding": "vuln-001"
+        },
+        {
+          "field": "exploitPublic",
+          "value": true,
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-001"
+        }
+      ],
+      "llm": {
+        "provider": "gemini:gemini-3.5-flash-lite",
+        "prompt_version": "triage-agent/v1.0",
+        "raw": {
+          "summary": "Se detectó ejecución remota de código en xml-fastparse (v4.2.1) utilizado en billing-api expuesta a internet. Se requiere actualizar a la versión 4.2.3 para mitigar el riesgo crítico.",
+          "reachability": "reachable",
+          "evidence_fields": [
+            "runtime_presence",
+            "internet_facing",
+            "environment"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar xml-fastparse de 4.2.1 a 4.2.3 en billing-api",
+          "pr_body": "Se requiere actualizar la dependencia xml-fastparse de la versión 4.2.1 a 4.2.3 debido a una vulnerabilidad crítica de ejecución remota de código (CVE-2026-31201) en billing-api."
+        },
+        "accepted": {
+          "summary": "Se detectó ejecución remota de código en xml-fastparse (v4.2.1) utilizado en billing-api expuesta a internet. Se requiere actualizar a la versión 4.2.3 para mitigar el riesgo crítico.",
+          "reachability": "reachable",
+          "evidence_fields": [
+            "runtime_presence",
+            "internet_facing",
+            "environment"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar xml-fastparse de 4.2.1 a 4.2.3 en billing-api",
+          "pr_body": "Se requiere actualizar la dependencia xml-fastparse de la versión 4.2.1 a 4.2.3 debido a una vulnerabilidad crítica de ejecución remota de código (CVE-2026-31201) en billing-api."
+        }
+      }
+    },
+    {
+      "group_id": "vuln-003",
+      "finding_ids": [
+        "vuln-003"
+      ],
+      "category": "code",
+      "title": "Heap overflow in pdf-render-lite when parsing crafted fonts",
+      "priority": "P1",
+      "score": 83.0,
+      "score_breakdown": {
+        "severity": 15.0,
+        "exploitability": 25,
+        "exploitability_reason": "exploit publico",
+        "exposure": 20,
+        "environment": 15,
+        "context": 8,
+        "context_reason": "runtime",
+        "blast_radius_bonus": 0,
+        "multiplier": 1.0,
+        "base": 83.0,
+        "total": 83.0
+      },
+      "sla": "24h",
+      "applicable": true,
+      "owner": "invoicing",
+      "route": "repo:invoice-pdf-generator",
+      "rationale": [
+        "ecosistema multiplataforma (pypi) desplegado en runtime linux",
+        "el advisory afirma 'no aplica a Linux' pero NINGUN campo estructurado lo respalda: se ignora"
+      ],
+      "actions": [
+        {
+          "type": "alert_appsec",
+          "description": "Alerta de posible manipulacion: el texto libre contiene instrucciones para herramientas/IA. Se ignoran y se investiga la fuente del advisory.",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": "actions\\vuln-003__01_alert_appsec.md"
+        },
+        {
+          "type": "open_pr",
+          "description": "PR en invoice-pdf-generator: pdf-render-lite 2.3.0 -> 2.3.2 (patch); CI obligatorio + re-escaneo",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": "actions\\vuln-003__02_open_pr.md"
+        },
+        {
+          "type": "merge",
+          "description": "Merge de dependencia de runtime en produccion: requiere revision humana (posible regresion)",
+          "autonomous": false,
+          "approvers": [
+            "AppSec",
+            "Team Lead (invoicing)"
+          ],
+          "artifact": null
+        },
+        {
+          "type": "notify",
+          "description": "Notificacion inmediata a invoicing + AppSec (SLA 24h)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "temp_mitigation",
+          "description": "Mitigacion temporal (regla WAF / feature flag) mientras se despliega el fix",
+          "autonomous": false,
+          "approvers": [
+            "Team Lead (invoicing)"
+          ],
+          "artifact": null
+        },
+        {
+          "type": "verify_and_close",
+          "description": "Cerrar SOLO cuando el re-escaneo confirme que desaparecio (por instancia)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        }
+      ],
+      "flags": [
+        "tampering_suspected",
+        "unverified_platform_claim"
+      ],
+      "evidence": [
+        {
+          "field": "advisoryDescription",
+          "value": "instrucciones dirigidas a herramientas/IA en texto libre",
+          "source": "free-text",
+          "trusted": false,
+          "finding": "vuln-003"
+        },
+        {
+          "field": "advisoryDescription",
+          "value": "afirma no aplicar a Linux; NO se acepta como evidencia",
+          "source": "free-text",
+          "trusted": false,
+          "finding": "vuln-003"
+        },
+        {
+          "field": "team",
+          "value": "invoicing",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-003"
+        },
+        {
+          "field": "environment",
+          "value": "production",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-003"
+        },
+        {
+          "field": "internetFacing",
+          "value": true,
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-003"
+        },
+        {
+          "field": "epss",
+          "value": 0.41,
+          "source": "threat-intel@2026-11-25",
+          "trusted": true,
+          "finding": "vuln-003"
+        },
+        {
+          "field": "exploitPublic",
+          "value": true,
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-003"
+        }
+      ],
+      "llm": {
+        "provider": "gemini:gemini-3.5-flash-lite",
+        "prompt_version": "triage-agent/v1.0",
+        "raw": {
+          "summary": "Se detectó una vulnerabilidad de desbordamiento de búfer en pdf-render-lite que afecta la versión 2.3.0 en un activo expuesto a internet.",
+          "reachability": "unknown",
+          "evidence_fields": [
+            "runtime_presence",
+            "internet_facing"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": true,
+          "pr_title": "Actualizar pdf-render-lite a la versión 2.3.2 para mitigar CVE-2026-30412",
+          "pr_body": "Se requiere actualizar el paquete pdf-render-lite de la versión 2.3.0 a 2.3.2 para solucionar CVE-2026-30412. El activo invoice-pdf-generator se encuentra en producción y expuesto a internet."
+        },
+        "accepted": {
+          "summary": "Se detectó una vulnerabilidad de desbordamiento de búfer en pdf-render-lite que afecta la versión 2.3.0 en un activo expuesto a internet.",
+          "reachability": "unknown",
+          "evidence_fields": [
+            "runtime_presence",
+            "internet_facing"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": true,
+          "pr_title": "Actualizar pdf-render-lite a la versión 2.3.2 para mitigar CVE-2026-30412",
+          "pr_body": "Se requiere actualizar el paquete pdf-render-lite de la versión 2.3.0 a 2.3.2 para solucionar CVE-2026-30412. El activo invoice-pdf-generator se encuentra en producción y expuesto a internet."
+        }
+      }
+    },
+    {
+      "group_id": "vuln-004+vuln-005",
+      "finding_ids": [
+        "vuln-004",
+        "vuln-005"
+      ],
+      "category": "os",
+      "title": "Denial of service in OpenSSL",
+      "priority": "P2",
+      "score": 68.9,
+      "score_breakdown": {
+        "severity": 15.0,
+        "exploitability": 5.9,
+        "exploitability_reason": "EPSS=0.03",
+        "exposure": 20,
+        "environment": 15,
+        "context": 8,
+        "context_reason": "runtime",
+        "blast_radius_bonus": 5,
+        "multiplier": 1.0,
+        "base": 68.9,
+        "total": 68.9
+      },
+      "sla": "7d",
+      "applicable": true,
+      "owner": "platform",
+      "route": "base-image:company/base-node:20",
+      "rationale": [
+        "2 reportes de 2 escaneres colapsados en 1 hallazgo",
+        "causa raiz: imagen base company/base-node:20",
+        "paquete de distro Linux (debian-12)"
+      ],
+      "actions": [
+        {
+          "type": "open_pr",
+          "description": "PR al Dockerfile de company/base-node:20: openssl -> 3.0.17-1 y rebuild",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": "actions\\vuln-004+vuln-005__01_open_pr.md"
+        },
+        {
+          "type": "rollout",
+          "description": "Rollout escalonado (canary -> resto) de company/base-node:20 y rebuild de ~38 imagenes hijas",
+          "autonomous": false,
+          "approvers": [
+            "DevOps/Platform"
+          ],
+          "artifact": null
+        },
+        {
+          "type": "open_ticket",
+          "description": "Un ticket de plataforma (no 40 tickets); instancias enlazadas",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": "actions\\vuln-004+vuln-005__03_open_ticket.md"
+        },
+        {
+          "type": "verify_lineage",
+          "description": "Confirmar herencia de imagen base via historial de capas/SBOM (hoy es un supuesto)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "verify_and_close",
+          "description": "Cerrar SOLO cuando el re-escaneo confirme que desaparecio (por instancia)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        }
+      ],
+      "flags": [
+        "assumption_base_image_lineage"
+      ],
+      "evidence": [
+        {
+          "field": "team",
+          "value": "platform",
+          "source": "cmdb",
+          "trusted": true,
+          "finding": "vuln-004"
+        },
+        {
+          "field": "environment",
+          "value": "production",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-004"
+        },
+        {
+          "field": "epss",
+          "value": 0.03,
+          "source": "threat-intel@2026-11-25",
+          "trusted": true,
+          "finding": "vuln-004"
+        },
+        {
+          "field": "team",
+          "value": "billing",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-005"
+        },
+        {
+          "field": "environment",
+          "value": "production",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-005"
+        },
+        {
+          "field": "internetFacing",
+          "value": true,
+          "source": "cmdb",
+          "trusted": true,
+          "finding": "vuln-005"
+        },
+        {
+          "field": "baseImage",
+          "value": "company/base-node:20",
+          "source": "cmdb",
+          "trusted": false,
+          "finding": "vuln-005"
+        },
+        {
+          "field": "epss",
+          "value": 0.03,
+          "source": "threat-intel@2026-11-25",
+          "trusted": true,
+          "finding": "vuln-005"
+        },
+        {
+          "field": "fixedVersion",
+          "value": "3.0.17-1",
+          "source": "correlation",
+          "trusted": true,
+          "finding": "vuln-005"
+        }
+      ],
+      "llm": {
+        "provider": "gemini:gemini-3.5-flash-lite",
+        "prompt_version": "triage-agent/v1.0",
+        "raw": {
+          "summary": "Se detectó una vulnerabilidad de denegación de servicio en OpenSSL que afecta a entornos de producción expuestos a internet.",
+          "reachability": "unknown",
+          "evidence_fields": [
+            "internet_facing",
+            "runtime_presence",
+            "version"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar OpenSSL de 3.0.15-1 a 3.0.17-1",
+          "pr_body": "Actualización requerida para mitigar CVE-2026-28150 en la imagen company/base-node:20 para el equipo platform."
+        },
+        "accepted": {
+          "summary": "Se detectó una vulnerabilidad de denegación de servicio en OpenSSL que afecta a entornos de producción expuestos a internet.",
+          "reachability": "unknown",
+          "evidence_fields": [
+            "internet_facing",
+            "runtime_presence",
+            "version"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar OpenSSL de 3.0.15-1 a 3.0.17-1",
+          "pr_body": "Actualización requerida para mitigar CVE-2026-28150 en la imagen company/base-node:20 para el equipo platform."
+        }
+      }
+    },
+    {
+      "group_id": "vuln-006",
+      "finding_ids": [
+        "vuln-006"
+      ],
+      "category": "os",
+      "title": "Buffer overflow in glibc",
+      "priority": "P3",
+      "score": 16.8,
+      "score_breakdown": {
+        "severity": 17.6,
+        "exploitability": 7.4,
+        "exploitability_reason": "EPSS=0.08",
+        "exposure": 8,
+        "environment": 15,
+        "context": 8,
+        "context_reason": "runtime",
+        "blast_radius_bonus": 0,
+        "multiplier": 0.3,
+        "base": 56.0,
+        "total": 16.8
+      },
+      "sla": "30d",
+      "applicable": true,
+      "owner": "reporting",
+      "route": "image:legacy-reports-worker:1.4",
+      "rationale": [
+        "paquete de distro Linux (debian-11)",
+        "runningTasks=0: sin superficie viva hoy (x0.3)",
+        "IA sugirio subir P4 -> P3 (pendiente de revision)"
+      ],
+      "actions": [
+        {
+          "type": "block_redeploy",
+          "description": "Politica de admision: bloquear despliegue de esta imagen hasta re-escaneo limpio (reversible)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "retire_image",
+          "description": "Proponer RETIRO de la imagen en lugar de parchar (verificar antes cron/batch: runningTasks=0 en el escaneo no prueba desuso)",
+          "autonomous": false,
+          "approvers": [
+            "Team Lead (reporting)"
+          ],
+          "artifact": "actions\\vuln-006__02_retire_image.md"
+        },
+        {
+          "type": "reopen_rule",
+          "description": "Si se reactiva: reabrir y re-priorizar sin multiplicador",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "verify_and_close",
+          "description": "Cerrar SOLO cuando el re-escaneo confirme que desaparecio (por instancia)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        }
+      ],
+      "flags": [
+        "verify_scheduled_jobs",
+        "llm_raised_needs_review"
+      ],
+      "evidence": [
+        {
+          "field": "team",
+          "value": "reporting",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-006"
+        },
+        {
+          "field": "environment",
+          "value": "production",
+          "source": "cmdb",
+          "trusted": true,
+          "finding": "vuln-006"
+        },
+        {
+          "field": "internetFacing",
+          "value": false,
+          "source": "cmdb",
+          "trusted": true,
+          "finding": "vuln-006"
+        },
+        {
+          "field": "epss",
+          "value": 0.08,
+          "source": "threat-intel@2026-11-25",
+          "trusted": true,
+          "finding": "vuln-006"
+        }
+      ],
+      "llm": {
+        "provider": "gemini:gemini-3.5-flash-lite",
+        "prompt_version": "triage-agent/v1.0",
+        "raw": {
+          "summary": "Se detectó una vulnerabilidad de desbordamiento de búfer en glibc (CVE-2026-26019) con severidad alta en un componente en producción. Se recomienda actualizar el paquete afectado a la versión 2.31-13+deb11u11 para mitigar el riesgo.",
+          "reachability": "unknown",
+          "evidence_fields": [
+            "runtime_presence",
+            "package",
+            "version"
+          ],
+          "suggested_priority_change": "raise",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar glibc a 2.31-13+deb11u11 por CVE-2026-26019",
+          "pr_body": "Se requiere actualizar el paquete glibc de la versión 2.31-13 a 2.31-13+deb11u11 en el activo legacy-reports-worker para resolver la vulnerabilidad CVE-2026-26019 reportada con CVSS 8.8."
+        },
+        "accepted": {
+          "summary": "Se detectó una vulnerabilidad de desbordamiento de búfer en glibc (CVE-2026-26019) con severidad alta en un componente en producción. Se recomienda actualizar el paquete afectado a la versión 2.31-13+deb11u11 para mitigar el riesgo.",
+          "reachability": "unknown",
+          "evidence_fields": [
+            "runtime_presence",
+            "package",
+            "version"
+          ],
+          "suggested_priority_change": "raise",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar glibc a 2.31-13+deb11u11 por CVE-2026-26019",
+          "pr_body": "Se requiere actualizar el paquete glibc de la versión 2.31-13 a 2.31-13+deb11u11 en el activo legacy-reports-worker para resolver la vulnerabilidad CVE-2026-26019 reportada con CVSS 8.8."
+        }
+      }
+    },
+    {
+      "group_id": "vuln-002",
+      "finding_ids": [
+        "vuln-002"
+      ],
+      "category": "code",
+      "title": "Path traversal in test-mock-server",
+      "priority": "P4",
+      "score": 23.8,
+      "score_breakdown": {
+        "severity": 18.2,
+        "exploitability": 5.3,
+        "exploitability_reason": "EPSS=0.01",
+        "exposure": 8,
+        "environment": 15,
+        "context": 1,
+        "context_reason": "build-only",
+        "blast_radius_bonus": 0,
+        "multiplier": 0.5,
+        "base": 47.5,
+        "total": 23.8
+      },
+      "sla": "90d",
+      "applicable": true,
+      "owner": "reporting",
+      "route": "repo:reports-service",
+      "rationale": [
+        "ecosistema multiplataforma (npm) desplegado en runtime linux",
+        "devDependency: no llega al artefacto de produccion (x0.5)"
+      ],
+      "actions": [
+        {
+          "type": "open_pr",
+          "description": "PR en reports-service: test-mock-server 1.0.4 -> 1.0.6 (patch); CI obligatorio + re-escaneo",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": "actions\\vuln-002__01_open_pr.md"
+        },
+        {
+          "type": "auto_merge",
+          "description": "Auto-merge si CI verde (devDependency, bump patch, sin impacto en runtime)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "verify_build",
+          "description": "Verificar que la devDependency NO esta en la imagen final (multi-stage / npm ci --omit=dev). Si esta, escalar como problema de build.",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        },
+        {
+          "type": "verify_and_close",
+          "description": "Cerrar SOLO cuando el re-escaneo confirme que desaparecio (por instancia)",
+          "autonomous": true,
+          "approvers": [],
+          "artifact": null
+        }
+      ],
+      "flags": [
+        "llm_not_reachable_is_advisory_only"
+      ],
+      "evidence": [
+        {
+          "field": "team",
+          "value": "reporting",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-002"
+        },
+        {
+          "field": "environment",
+          "value": "production",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-002"
+        },
+        {
+          "field": "internetFacing",
+          "value": false,
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-002"
+        },
+        {
+          "field": "package.scope",
+          "value": "devDependency",
+          "source": "scanner",
+          "trusted": true,
+          "finding": "vuln-002"
+        },
+        {
+          "field": "buildExcludesDevDependencies",
+          "value": true,
+          "source": "cmdb",
+          "trusted": true,
+          "finding": "vuln-002"
+        },
+        {
+          "field": "epss",
+          "value": 0.01,
+          "source": "threat-intel@2026-11-25",
+          "trusted": true,
+          "finding": "vuln-002"
+        }
+      ],
+      "llm": {
+        "provider": "gemini:gemini-3.5-flash-lite",
+        "prompt_version": "triage-agent/v1.0",
+        "raw": {
+          "summary": "Se detectó una vulnerabilidad de path traversal en el paquete de desarrollo test-mock-server. Se recomienda actualizar a la versión 1.0.6 para mitigar el riesgo en el entorno de producción.",
+          "reachability": "not_reachable",
+          "evidence_fields": [
+            "runtime_presence",
+            "scope"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar test-mock-server a la versión 1.0.6",
+          "pr_body": "Actualización de seguridad requerida para el paquete test-mock-server debido a CVE-2026-29877. Versión actual: 1.0.4, versión fija: 1.0.6."
+        },
+        "accepted": {
+          "summary": "Se detectó una vulnerabilidad de path traversal en el paquete de desarrollo test-mock-server. Se recomienda actualizar a la versión 1.0.6 para mitigar el riesgo en el entorno de producción.",
+          "reachability": "not_reachable",
+          "evidence_fields": [
+            "runtime_presence",
+            "scope"
+          ],
+          "suggested_priority_change": "none",
+          "tampering_suspected": false,
+          "pr_title": "Actualizar test-mock-server a la versión 1.0.6",
+          "pr_body": "Actualización de seguridad requerida para el paquete test-mock-server debido a CVE-2026-29877. Versión actual: 1.0.4, versión fija: 1.0.6."
+        }
+      }
+    }
+  ]
+}
