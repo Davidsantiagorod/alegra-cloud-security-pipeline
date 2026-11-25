@@ -1,0 +1,2 @@
+# Opcional: solo para --llm gemini. El nucleo del pipeline no tiene dependencias.
+google-genai>=1.0

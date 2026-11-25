@@ -1,0 +1,13 @@
+{
+  "_comment": "Snapshot OFFLINE simulado (los CVE del reto son ficticios). En produccion: EPSS desde api.first.org y KEV desde el feed JSON de CISA, cacheados con fecha.",
+  "snapshotDate": "2026-11-25",
+  "kev": [],
+  "epss": {
+    "CVE-2026-31201": 0.62,
+    "CVE-2026-29877": 0.01,
+    "CVE-2026-30412": 0.41,
+    "CVE-2026-28150": 0.03,
+    "CVE-2026-26019": 0.08,
+    "CVE-2026-35555": 0.05
+  }
+}

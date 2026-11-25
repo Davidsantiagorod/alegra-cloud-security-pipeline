@@ -1,0 +1,39 @@
+[
+  {
+    "id": "vuln-101",
+    "source": "dependency-scanner",
+    "category": "code",
+    "cve": "CVE-2026-40001",
+    "cvss": 8.1,
+    "title": "Privilege escalation in win-service-helper (Windows-only native module)",
+    "package": { "name": "win-service-helper", "ecosystem": "npm", "version": "2.0.0", "fixedVersion": "2.0.1", "platforms": ["windows"] },
+    "exploitPublic": false,
+    "asset": { "repo": "billing-api", "environment": "production", "internetFacing": true, "team": "billing" },
+    "_comment": "Caso propio: N/A legitimo. La evidencia es un campo ESTRUCTURADO (package.platforms), no texto libre. Contrasta con vuln-003."
+  },
+  {
+    "id": "vuln-102",
+    "source": "sast-scanner",
+    "category": "code",
+    "cve": null,
+    "cwe": "CWE-89",
+    "cvss": 8.6,
+    "title": "SQL injection in invoice search query",
+    "location": { "file": "src/invoices/search.py", "line": 87 },
+    "exploitPublic": false,
+    "asset": { "repo": "invoice-pdf-generator", "environment": "production", "internetFacing": true, "team": "invoicing" },
+    "notes": "User-controlled parameter 'q' is concatenated into a SQL string",
+    "_comment": "Caso propio: hallazgo SAST en codigo propio, no hay fixedVersion; requiere fix humano."
+  },
+  {
+    "id": "vuln-103",
+    "source": "host-scanner",
+    "category": "os",
+    "cve": "CVE-2026-35555",
+    "cvss": 7.8,
+    "title": "Local privilege escalation in Linux kernel netfilter",
+    "package": { "name": "linux-image-amd64", "distro": "debian-12", "version": "6.1.115-1", "fixedVersion": "6.1.129-1" },
+    "asset": { "host": "ci-runner-pool", "hostsAffected": 6, "environment": "production", "team": "platform" },
+    "_comment": "Caso propio: CVE de kernel en servidores; requiere reinicio con ventana de mantenimiento."
+  }
+]

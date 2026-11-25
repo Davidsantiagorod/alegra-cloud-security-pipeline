@@ -1,0 +1,29 @@
+{
+  "_comment": "CMDB simulada. En produccion vendria de Backstage / tags de AWS / inventario de servicios. Campos con source=assumed son SUPUESTOS documentados.",
+  "services": {
+    "billing-api": {
+      "team": "billing", "environment": "production", "internetFacing": true,
+      "baseImage": "company/base-node:20", "baseImageSource": "assumed",
+      "runtimeOs": "linux"
+    },
+    "reports-service": {
+      "team": "reporting", "environment": "production", "internetFacing": false,
+      "runtimeOs": "linux", "buildExcludesDevDependencies": true
+    },
+    "invoice-pdf-generator": {
+      "team": "invoicing", "environment": "production", "internetFacing": true,
+      "runtimeOs": "linux"
+    },
+    "legacy-reports-worker": {
+      "team": "reporting", "environment": "production", "internetFacing": false,
+      "runtimeOs": "linux", "workloadType": "batch-worker", "scheduledJobs": "unknown"
+    },
+    "ci-runner-pool": {
+      "team": "platform", "environment": "production", "internetFacing": false,
+      "runtimeOs": "linux"
+    }
+  },
+  "baseImages": {
+    "company/base-node:20": { "owner": "platform", "runtimeOs": "linux" }
+  }
+}

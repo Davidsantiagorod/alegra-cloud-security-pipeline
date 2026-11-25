@@ -1,0 +1,23 @@
+# Ejemplo de "prevenir": el mismo motor actua como gate en cada PR.
+# En produccion, el paso de escaneo produciria el JSON normalizado (Trivy/OSV-Scanner/Semgrep).
+name: security-gate
+on:
+  pull_request:
+  schedule:
+    - cron: "0 6 * * *"   # triage diario de lo que ya esta desplegado
+permissions:
+  contents: read           # minimo privilegio: el gate no escribe ni despliega
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Tests del pipeline
+        run: python -m unittest discover -s tests
+      - name: Triage + gate (falla si hay P1/P2 accionables)
+        run: python main.py --gate --llm off
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: triage-report, path: output/ }
