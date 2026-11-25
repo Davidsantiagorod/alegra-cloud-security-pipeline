@@ -10,7 +10,7 @@ Un motor determinista decide, la IA (Gemini) asiste y lo irreversible pasa por u
 | ② | Documento de diseño (exactamente 2 páginas) | [docs/02_documento_diseno.pdf](docs/02_documento_diseno.pdf) · [Markdown](docs/02_documento_diseno.md) |
 | ③ | Resultado sobre los 6 ejemplos (+3 casos extra) | [docs/03_resultados.md](docs/03_resultados.md) |
 | ④ | Artefacto funcional (cero dependencias) | este repo (`main.py`, `pipeline/`, `tests/`) |
-| ⑤ | Anexos de construcción (prompts, corrida real con Gemini y bitácora) | [anexos/](anexos/) |
+| ⑤ | Anexos de construcción (prompts, Prueba real con API Gemini y bitácora) | [anexos/](anexos/) |
 
 ## Ejecutar (sin dependencias, sin API key)
 Requiere Python 3.10 o superior.
