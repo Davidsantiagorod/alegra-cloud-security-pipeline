@@ -54,7 +54,7 @@ tests/                   21 tests (injection, guardrails, prioridades, auditorí
 .github/workflows/       ejemplo de gate en CI
 ```
 
-## Demo sugerida (5 min)
+## Demo  (5 min)
 1. **(30 s)** La idea: motor determinista + IA acotada + humano en lo irreversible.
 2. **(90 s)** `python main.py`: tabla con prioridades, acciones y qué requiere humano (`*`).
 3. **(90 s)** **vuln-003**: el advisory intenta engañar a la IA. Luego `--llm compromised`: aunque el modelo obedezca, los guardrails lo rechazan.
